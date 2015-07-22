@@ -19,7 +19,7 @@
 #
 ##############################################################################
 {
-    "name" : "Hotel Reservation Management",
+    "name" : "Hotel Reservation 2",
     "version" : "1.0",
     "author" : "Tiny,Odoo Community Association (OCA)",
     "category" : "Generic Modules/Hotel Reservation",
@@ -32,20 +32,21 @@ Module for Hotel/Resort/Property management. You can manage:
 Different reports are also provided, mainly for hotel statistics.
     """,
     "depends" : ["hotel"],
-    "init_xml" : [],
+    #"init_xml" : [],
     "demo_xml" : [
         #'hotel_reservation_data.xml',
     ],
-    "update_xml" : [
-                    "hotel_reservation_view.xml",
-                    "hotel_reservation_sequence.xml",
-                    "hotel_reservation_workflow.xml",
-                    "wizard/hotel_reservation_wizard.xml",
-                    "report/hotel_reservation_report.xml",
+    "data" : [ #update.xml
+                    "views/hotel_reservation_view.xml",
+                    "views/hotel_reservation_sequence.xml",
+                    "views/hotel_reservation_workflow.xml",
+                    "views/hotel_reservation_wizard.xml",
+                    "views/hotel_reservation_report.xml",
                     "security/ir.model.access.csv",
     ],
     "active": False,
-    'installable': False
+    'installable': True,
+    
 }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -8,44 +8,49 @@
 		<record model="ir.ui.view" id="view_hotel_reservation_form">
 			<field name="name">hotel.reservation.form</field>
 			<field name="model">hotel.reservation</field>
+
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string=" Reservation">
-				<notebook>
-					<page string="Reservation">
-						<field name="reservation_no" colspan="1"/>
-						<field name="date_order" select="1"/>
-						<field name="shop_id" select="2"/>
-						<field name="pricelist_id"/>
-						<field name="partner_id" on_change="onchange_partner_id(partner_id)" select="1"/>
-						<field name="partner_order_id" domain="[('partner_id','=',partner_id)]"/>
-						<field name="partner_invoice_id" domain="[('partner_id','=',partner_id)]"/>
-						<field name="partner_shipping_id" domain="[('partner_id','=',partner_id)]"/>
-						<field name="checkin" colspan="1"/>
-						<field name="checkout" on_change="on_change_checkout(checkin,checkout)"/>
-						<field name="adults"/>
-						<field name="childs"/>
-						<field name="dummy" invisible="True"/>
-						<field name="reservation_line" colspan="4" nolabel="1">
-							<form string="Reservation Line">
-								<separator string="Room Type"/>
-								<field name="categ_id" select="1" colspan="4" nolabel="1"/>
-								<newline/>
-								<separator string="Select Room "/>
-								<field name="reserve" colspan="4" nolabel="1"/>
-							</form>
-							<tree string="Reservation Line">
-								<field name="categ_id" select="1"/>
-								<field name="reserve" colspan="4" string="No Of Rooms"/>
-							</tree>
-						</field>
-						<group colspan="4">
-							<field name="state"/>
-							<button name="confirm" string="Confirm" states="draft" icon="gtk-ok"/>
-							<button name="done" string="Create Folio" states="confirm" icon="gtk-go-forward"/>
-						</group>
-					</page>
-				</notebook>
+					<sheet>
+						<notebook>
+							<page string="Reservation">
+								<group>
+									<field name="reservation_no" colspan="1"/>
+									<field name="date_order"/>
+									<field name="hotel_id"/>
+									<field name="pricelist_id"/>
+									<field name="partner_id"/>
+									<field name="partner_order_id" domain="[('parent_id','=',partner_id)]"/>
+									<field name="partner_invoice_id" domain="[('parent_id','=',partner_id)]"/>
+									<field name="partner_shipping_id" domain="[('parent_id','=',partner_id)]"/>
+									<field name="checkin" colspan="1"/>
+									<field name="checkout"/>
+									<field name="adults"/>
+									<field name="childs"/>
+									<field name="dummy" invisible="True"/>
+								</group>
+								<field name="reservation_line" colspan="4" nolabel="1">
+									<form string="Reservation Line">
+										<separator string="Room Type"/>
+										<field name="categ_id" select="1" colspan="4" nolabel="1"/>
+										<newline/>
+										<separator string="Select Room "/>
+										<field name="reserve" colspan="4" nolabel="1"/>
+									</form>
+									<tree string="Reservation Line">
+										<field name="categ_id" select="1"/>
+										<field name="reserve" colspan="4" string="No Of Rooms"/>
+									</tree>
+								</field>
+								<group colspan="4">
+									<field name="state"/>
+									<button name="confirm" string="Confirm" states="draft" icon="gtk-ok"/>
+									<button name="done" string="Create Folio" states="confirm" icon="gtk-go-forward"/>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
 				</form>
 			</field>
 		</record>
@@ -93,7 +98,7 @@
 		<record model="ir.ui.view" id="view_hotel_reservation_graph">
 			<field name="name">hotel.reservation.graph</field>
 			<field name="model">hotel.reservation</field>
-			<field name="type">graph</field>
+			<field name="type"	>graph</field>
 			<field name="arch" type="xml">
 				<graph string="Reservation" type="bar">		
 					<field name="state"/>
