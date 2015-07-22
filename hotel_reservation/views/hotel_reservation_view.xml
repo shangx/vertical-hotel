@@ -4,7 +4,7 @@
 	<!--============================================================
 								Reservation
 		============================================================ -->
-		
+
 		<record model="ir.ui.view" id="view_hotel_reservation_form">
 			<field name="name">hotel.reservation.form</field>
 			<field name="model">hotel.reservation</field>
@@ -21,9 +21,9 @@
 									<field name="hotel_id"/>
 									<field name="pricelist_id"/>
 									<field name="partner_id"/>
-									<field name="partner_order_id" domain="[('parent_id','=',partner_id)]"/>
-									<field name="partner_invoice_id" domain="[('parent_id','=',partner_id)]"/>
-									<field name="partner_shipping_id" domain="[('parent_id','=',partner_id)]"/>
+									<field name="partner_order_id" />
+									<field name="partner_invoice_id" />
+									<field name="partner_shipping_id" />
 									<field name="checkin" colspan="1"/>
 									<field name="checkout"/>
 									<field name="adults"/>
@@ -45,8 +45,8 @@
 								</field>
 								<group colspan="4">
 									<field name="state"/>
-									<button name="confirm" string="Confirm" states="draft" icon="gtk-ok"/>
-									<button name="done" string="Create Folio" states="confirm" icon="gtk-go-forward"/>
+									<button name="confirmed_reservation" type="object" string="Confirm" states="draft" icon="gtk-ok"/>
+									<button name="create_folio" type="object" string="Create Folio" states="confirm" icon="gtk-go-forward"/>
 								</group>
 							</page>
 						</notebook>
@@ -93,30 +93,30 @@
                 </search>
             </field>
         </record>
-        
-		
+
+
 		<record model="ir.ui.view" id="view_hotel_reservation_graph">
 			<field name="name">hotel.reservation.graph</field>
 			<field name="model">hotel.reservation</field>
 			<field name="type"	>graph</field>
 			<field name="arch" type="xml">
-				<graph string="Reservation" type="bar">		
+				<graph string="Reservation" type="bar">
 					<field name="state"/>
 					<field name="reservation_no"/>
 				</graph>
 			</field>
 		</record>
-		
-		
-		
+
+
+
 		<record model="ir.actions.act_window" id="open_hotel_reservation_form_tree">
 			<field name="name">Reservation</field>
 			<field name="res_model">hotel.reservation</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">form,tree</field>
-		</record> 
-		
-				  
+		</record>
+
+
 		<record model="ir.actions.act_window" id="action_hotel_reservation_tree_all">
 			<field name="name">All Reservation</field>
 			<field name="type">ir.actions.act_window</field>
@@ -125,19 +125,19 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem  id="menu_hotel_reservation" name="Reservations" parent="hotel.hotel_management_menu" sequence="1"/>
-		
-		<menuitem name="All Reservations" 
-				  id="menu_action_hotel_reservation_tree_all" 
+
+		<menuitem name="All Reservations"
+				  id="menu_action_hotel_reservation_tree_all"
 				  action="action_hotel_reservation_tree_all"
 				  parent="menu_hotel_reservation"
 				  sequence="3"/>
-				  
+
 		<menuitem name="New Reservation"
-		          id="menu_open_hotel_reservation_form_tree" 
+		          id="menu_open_hotel_reservation_form_tree"
 				  action="open_hotel_reservation_form_tree"
 				  sequence="20"
 				  parent="menu_hotel_reservation"/>
-		
+
 		<record model="ir.ui.view" id="hotel_calendar_view">
 			<field name="name">Room Reservation</field>
 			<field name="model">hotel.reservation</field>
@@ -149,8 +149,8 @@
 			   </calendar>
 			</field>
 		</record>
-		
-					
-		
+
+
+
 	</data>
 </openerp>
