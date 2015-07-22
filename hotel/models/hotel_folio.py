@@ -10,7 +10,6 @@ from openerp.exceptions import except_orm
 from openerp.exceptions import Warning
 from openerp.exceptions import RedirectWarning
 from openerp.tools.translate import _
-from numpy.ma.core import ids
 
 
 class HotelFolio(models.Model):
@@ -52,7 +51,8 @@ class HotelFolio(models.Model):
         default='manual',
         required=True)
     duration = fields.Float(
-        string='Duration')
+        string='Duration',
+        required=True)
     warehouse_id = fields.Many2one(
         'stock.warehouse')
     room_id = fields.Many2one('hotel.room',
@@ -79,7 +79,7 @@ class HotelFolio(models.Model):
             if self.checkout_date < self.checkin_date:
                 raise Warning(
                     _('Check Out date can`t be previous than Check In date.'))
-                
+    
 
     @api.onchange('duration')
     def _onchange_duration(self):
@@ -109,7 +109,7 @@ class HotelFolio(models.Model):
 
     @api.multi
     def action_invoice_create(self, grouped=False, states=['confirmed','done']):
-        i = self.env['sale.order'].browse(self.ids)
+        i = self.env['ir.quotation'].get(self.ids)
         i.action_invoice_create(grouped=False, states=['confirmed', 'done'])
         for line in self.browse(ids):
             self.write([line.id], {'invoiced': True})

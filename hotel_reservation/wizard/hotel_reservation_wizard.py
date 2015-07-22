@@ -18,30 +18,35 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-from osv import fields
-from osv import osv
+from openerp import fields
+from openerp import pooler
+from openerp import models
+from openerp.tools import config
+from openerp import api
+from openerp import netsvc
+
 import time
 from mx import DateTime
 import datetime
-import pooler
-from tools import config
-import wizard
-import netsvc
+#from openerp import wizard
 
-class hotel_reservation_wizard(osv.osv_memory):
+
+class hotel_reservation_wizard(models.TransientModel):
     
     _name = 'hotel.reservation.wizard'
     
-    _columns = {
-        'date_start' :fields.datetime('Start Date',required=True),
-        'date_end': fields.datetime('End Date',required=True),        
-    }
+    date_start = fields.Datetime('Start Date',
+                                 required=True)
     
-    def report_reservation_detail(self,cr,uid,ids,context=None):    
+    date_end = fields.Datetime('End Date',
+                               required=True)       
+    
+    @api.multi
+    def report_reservation_detail(self):    
         datas = {
-             'ids': ids,
+             'ids': self.ids,
              'model': 'hotel.reservation',
-             'form': self.read(cr, uid, ids)[0]
+             'form': self.read()[0]
         }
         return {
             'type': 'ir.actions.report.xml',
@@ -84,20 +89,13 @@ class hotel_reservation_wizard(osv.osv_memory):
             'report_name': 'maxroom.detail',
             'datas': datas,
         }
-      
-hotel_reservation_wizard()
 
-class make_folio_wizard(osv.osv_memory):
+class make_folio_wizard(models.TransientModel):
     
     _name = 'wizard.make.folio'
     
-    _columns = {
-        'grouped':fields.boolean('Group the Folios'),
-    }
-    
-    _defaults = {  
-        'grouped': False,
-    }
+    grouped = fields.Boolean('Group the Folios',
+                             default = False)
     
     def makeFolios(self, cr, uid, data, context):
         order_obj = self.pool.get('hotel.reservation')
@@ -115,7 +113,5 @@ class make_folio_wizard(osv.osv_memory):
             'type': 'ir.actions.act_window'
         }
 
-    
-make_folio_wizard()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
