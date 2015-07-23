@@ -1,23 +1,4 @@
 # -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
 
 from openerp import models
 from openerp import fields
@@ -161,7 +142,7 @@ class hotel_reservation(models.Model):
             self.partner_shipping_id = addr['delivery']
             self.pricelist_id = self.partner_id.property_product_pricelist.id
         '''
-        #alternative
+        # alternative
         self.partner_invoice_id = self.partner_id.id
         self.partner_order_id = self.partner_id.id
         self.partner_shipping_id = self.partner_id.id
@@ -213,27 +194,34 @@ class hotel_reservation(models.Model):
         for reservation in self.browse(self.ids):
             for line in reservation.reservation_line:
                 for r in line.reserve:
-                    folio=self.env['hotel.folio'].create({'date_order':reservation.date_order,
-                                                          'hotel_id':reservation.hotel_id.id,
-                                                          'partner_id':reservation.partner_id.id,
-                                                          'pricelist_id':reservation.pricelist_id.id,
-                                                          'partner_invoice_id':reservation.partner_invoice_id.id,
-                                                          'partner_order_id':reservation.partner_order_id.id,
-                                                          'partner_shipping_id':reservation.partner_shipping_id.id,
-                                                          'checkin_date': reservation.checkin,
-                                                          'checkout_date': reservation.checkout,
-                                                          'room_lines': [(0,0,{'folio_id':line['id'],
-                                                                               'checkin_date':reservation['checkin'],
-                                                                               'checkout_date':reservation['checkout'],
-                                                                               'product_id':r['id'],
-                                                                               'name':reservation['reservation_no'],
-                                                                               'product_uom':r['uom_id'].id,
-                                                                               'price_unit':r['lst_price'],
-                                                                               'duration':(datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days
+                    folio = self.env['hotel.folio'].create(
+                         {'date_order': reservation.date_order,
+                          'hotel_id': reservation.hotel_id.id,
+                          'partner_id': reservation.partner_id.id,
+                          'pricelist_id': reservation.pricelist_id.id,
+                          'partner_invoice_id':
+                          reservation.partner_invoice_id.id,
+                          'partner_order_id':
+                          reservation.partner_order_id.id,
+                          'partner_shipping_id':
+                          reservation.partner_shipping_id.id,
+                          'checkin_date': reservation.checkin,
+                          'checkout_date': reservation.checkout,
+                          'room_lines': [(0, 0, {'folio_id': line['id'],
+                                                 'checkin_date':
+                                                 reservation['checkin'],
+                                                 'checkout_date':
+                                                 reservation['checkout'],
+                                                 'product_id': r['id'],
+                                                 'name':
+                                                 reservation['reservation_no'],
+                                                 'product_uom':r['uom_id'].id,
+                                                 'price_unit':r['lst_price'],
+                                                 'duration':(datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days
 
-                                                                               })],
-                                                         'service_lines':reservation['folio_id']
-                                                         })
+                                                 })],
+                         'service_lines':reservation['folio_id']
+                         })
             cr.execute('insert into hotel_folio_reservation_rel (order_id,invoice_id) values (%s,%s)', (reservation.id, folio))
             self.write({'state':'done'})
         return True
