@@ -4,6 +4,8 @@ from openerp import models
 from openerp import fields
 from openerp import api
 from openerp import pooler
+from openerp import tools
+from openerp.tools.translate import _
 from openerp import exceptions
 from openerp.exceptions import Warning
 from openerp.tools import config
@@ -111,6 +113,13 @@ class hotel_reservation(models.Model):
                                 'invoice_id',
                                 'Folio')
 
+    order_line_id = fields.Many2one(
+        'sale.order.line',
+        string='Order Line',
+        required=True,
+        ondelete='cascade',
+        delegate=True)
+
     dummy = fields.Datetime('Dummy')
 
     '''
@@ -196,7 +205,6 @@ class hotel_reservation(models.Model):
                 for r in line.reserve:
                     folio = self.env['hotel.folio'].create(
                          {'date_order': reservation.date_order,
-                          'hotel_id': reservation.hotel_id.id,
                           'partner_id': reservation.partner_id.id,
                           'pricelist_id': reservation.pricelist_id.id,
                           'partner_invoice_id':
@@ -207,22 +215,20 @@ class hotel_reservation(models.Model):
                           reservation.partner_shipping_id.id,
                           'checkin_date': reservation.checkin,
                           'checkout_date': reservation.checkout,
-                          'room_lines': [(0, 0, {'folio_id': line['id'],
-                                                 'checkin_date':
-                                                 reservation['checkin'],
-                                                 'checkout_date':
-                                                 reservation['checkout'],
-                                                 'product_id': r['id'],
-                                                 'name':
-                                                 reservation['reservation_no'],
-                                                 'product_uom':r['uom_id'].id,
-                                                 'price_unit':r['lst_price'],
-                                                 'duration':(datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days
-
-                                                 })],
-                         'service_lines':reservation['folio_id']
+                          'duration': (datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days
+                          })
+                    self._cr.execute('insert into hotel_folio_reservation_rel (order_id,invoice_id) values (%s,%s)', (reservation.id, folio.id))
+                    room_line = self.env['hotel.folio.room'].create(
+                        {'folio_id': folio.id,
+                         'name': r.name_template,
+                         'product_id': r.id,
+                         'product_uom': r['uom_id'].id,
+                         'price_unit': r['lst_price'],
+                         'order_line_id': order_line_id,
+                         'checkin_date': reservation['checkin'],
+                         'checkout_date': reservation['checkout'],
                          })
-            cr.execute('insert into hotel_folio_reservation_rel (order_id,invoice_id) values (%s,%s)', (reservation.id, folio))
+                         #'service_lines':reservation['folio_id']
             self.write({'state':'done'})
         return True
 
